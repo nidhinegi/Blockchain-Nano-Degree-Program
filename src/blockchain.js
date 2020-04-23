@@ -211,7 +211,16 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            
+            let previousBlockHash=null;
+            for(const block of self.chain){
+                let isValidBlock=await block.validate();
+                if(block.previousBlockHash!=previousBlockHash  && !isValidBlock){
+                    errorLog.push({block,
+                        error:"Invalid Block"});
+                }
+                previousBlockHash=block.hash;
+            }
+            resolve(errorLog);
         });
     }
 
