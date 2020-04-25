@@ -214,9 +214,12 @@ class Blockchain {
             let previousBlockHash=null;
             for(const block of self.chain){
                 let isValidBlock=await block.validate();
-                if(block.previousBlockHash!=previousBlockHash  && !isValidBlock){
-                    errorLog.push({block,
+                if(!isValidBlock){
+                    errorLog.push({blockIndex: block.height ,
                         error:"Invalid Block"});
+                }else if(block.previousBlockHash!=previousBlockHash){
+                    errorLog.push({blockIndex: block.height ,
+                                        error:"Previous Block Hash does not match"});
                 }
                 previousBlockHash=block.hash;
             }
